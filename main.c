@@ -16,11 +16,13 @@
  
 #include "SPI.h"
 #include "GPIO.h"
+#include "NVIC.h"
 #include "Bits.h"
 #include "LCD_nokia.h"
 #include "LCD_nokia_images.h"
 #include "stdint.h"
 #include "RGB.h"
+#include "menu.h"
 
 
 /** \brief This is the configuration structure to configure the LCD.
@@ -39,54 +41,33 @@ const spi_config_t g_spi_config = {
 
 /*! This array hold the initial picture that is shown in the LCD. Note that extern should be avoided*/
 //extern const uint8_t ITESO[504];
-//extern const uint8_t PUMA [504];
-
 
 int main(void)
 {
-	uint8_t string_1[]="ITESO"; /*! String to be printed in the LCD*/
-	uint8_t string_2[]="Sistemas"; /*! String to be printed in the LCD*/
-	uint8_t string_3[]="Embebidos I"; /*! String to be printed in the LCD*/
-	uint8_t string_4[]="IE"; /*! String to be printed in the LCD*/
+	RGB_init();
+	SW_init();
+
+	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
+	NVIC_set_basepri_threshold(PRIORITY_10);
+
+	NVIC_enable_interrupt_and_priotity(PORTA_IRQ,PRIORITY_9);	// sw3
+	NVIC_enable_interrupt_and_priotity(PORTC_IRQ,PRIORITY_9);	// sw2
+
+	/* PTB2_B0 PTB3_B1 PTB10_B2 PB11_B3 PB18_B4 PB19_B5 PB20_B6  */
+	NVIC_enable_interrupt_and_priotity(PORTB_IRQ,PRIORITY_9);	// 7sw´s externos
+	NVIC_global_enable_interrupts;
+
 
 	SPI_init(&g_spi_config); /*! Configuration function for the LCD port*/
 	LCD_nokia_init(); /*! Configuration function for the LCD */
 
-	uint8_t* ptr_array_PUMA = LCD_nokia_PUMA ();
 	uint8_t* ptr_array_ITESO = LCD_nokia_ITESO();
-	uint8_t* ptr_array_AME = LCD_nokia_AME();
 
-	for (;;) {
-		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
-		LCD_nokia_bitmap(ptr_array_PUMA); /*! It prints an array that hold an image, in this case is the initial picture*/
-		delay(2500);
-		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
-		LCD_nokia_bitmap(ptr_array_AME); /*! It prints an array that hold an image, in this case is the initial picture*/
-		delay(2500);
-		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
-		LCD_nokia_bitmap(ptr_array_ITESO); /*! It prints an array that hold an image, in this case is the initial picture*/
-		delay(2500);
-		LCD_nokia_clear();
-		delay(2500);
-		LCD_nokia_clear();
-		LCD_nokia_goto_xy(20,0); /*! It establishes the position to print the messages in the LCD*/
-		LCD_nokia_send_string(&string_1[0]); /*! It print a string stored in an array*/
-		delay(2500);
-		LCD_nokia_goto_xy(12,1);
-		LCD_nokia_send_string(string_2); /*! It print a string stored in an array*/
-		delay(2500);
-		LCD_nokia_goto_xy(4,2);
-		LCD_nokia_send_string(string_3); /*! It print a string stored in an array*/
-		delay(2500);
-		LCD_nokia_goto_xy(30,3);
-		LCD_nokia_send_string(string_4); /*! It print a string stored in an array*/
-		delay(2500);
-		LCD_nokia_goto_xy(24,4);
-		LCD_nokia_send_char('2'); /*! It prints a character*/
-		LCD_nokia_send_char('0'); /*! It prints a character*/
-		LCD_nokia_send_char('1'); /*! It prints a character*/
-		LCD_nokia_send_char('9'); /*! It prints a character*/
-		delay(2500);
+	LCD_nokia_clear();
+
+	for (;;)
+	{
+		Menu_Inicial( );
 	}
 	
 	return 0;

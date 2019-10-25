@@ -92,19 +92,16 @@ void PORTA_IRQHandler(void)
 }
 void PORTB_IRQHandler(void)
 {
-	if(gpio_B_callback)
-	{
-		gpio_B_callback();	// Función del teclado
-	}
-
+	g_intr_status_flag.flag_port_b = TRUE;	// bandera de SW de 7 SW´S EXTERNOS
 	GPIO_clear_interrupt(GPIO_B);
 }
 
-void PORTC_IRQHandler(void) {
-
-		g_intr_status_flag.flag_port_c = TRUE;	// bandera de SW de SW2
-		GPIO_clear_interrupt(GPIO_C);
+void PORTC_IRQHandler(void)
+{
+	g_intr_status_flag.flag_port_c = TRUE;	// bandera de SW de SW2
+	GPIO_clear_interrupt(GPIO_C);
 }
+
 void GPIO_clear_interrupt(gpio_port_name_t port_name)
 {
 	switch(port_name)/** Selecting the GPIO for clock enabling*/
