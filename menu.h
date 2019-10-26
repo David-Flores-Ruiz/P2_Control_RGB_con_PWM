@@ -11,5 +11,6 @@
 #include "stdint.h"
 
 	void Menu_Inicial(void);
+	void Menu_RGB_ADC(void);
 
 #endif /* MENU_H_ */

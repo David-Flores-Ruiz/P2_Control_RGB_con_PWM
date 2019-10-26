@@ -12,7 +12,6 @@
 	\date	19/09/2019
 	    The SPI device driver needs to be completed.
  */
-
  
 #include "SPI.h"
 #include "GPIO.h"
@@ -28,16 +27,16 @@
 /** \brief This is the configuration structure to configure the LCD.
  * Note that is constants and it is because is only a variable used for configuration*/
 const spi_config_t g_spi_config = {
-							SPI_DISABLE_FIFO,
-							SPI_LOW_POLARITY,
-							SPI_LOW_PHASE,
-							SPI_MSB,
-							SPI_0,
-							SPI_MASTER,
-							GPIO_MUX2|GPIO_DSE,
-							SPI_BAUD_RATE_8,
-							SPI_FSIZE_8,
-							{GPIO_D, bit_0, bit_1, bit_2, bit_3} };
+					SPI_DISABLE_FIFO,
+					SPI_LOW_POLARITY,
+					SPI_LOW_PHASE,
+					SPI_MSB,
+					SPI_0,
+					SPI_MASTER,
+					GPIO_MUX2|GPIO_DSE,
+					SPI_BAUD_RATE_8,
+					SPI_FSIZE_8,
+					{GPIO_D, bit_0, bit_1, bit_2, bit_3} };
 
 /*! This array hold the initial picture that is shown in the LCD. Note that extern should be avoided*/
 //extern const uint8_t ITESO[504];
@@ -57,7 +56,6 @@ int main(void)
 	NVIC_enable_interrupt_and_priotity(PORTB_IRQ,PRIORITY_9);	// 7sw´s externos
 	NVIC_global_enable_interrupts;
 
-
 	SPI_init(&g_spi_config); /*! Configuration function for the LCD port*/
 	LCD_nokia_init(); /*! Configuration function for the LCD */
 
@@ -65,11 +63,32 @@ int main(void)
 
 	LCD_nokia_clear();
 
+	uint8_t state_B0 = 0;
+	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
+	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
+
 	for (;;)
 	{
-		Menu_Inicial( );
+		//Menu_Inicial( );
+		Menu_RGB_ADC();
+		GPIO_decode_intr_PORTB (GPIO_B);
+		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
+		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
+		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
+		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
+		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
+		state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B5);
+		state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B6);
+
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B1);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B2);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B3);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
+		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
+
 	}
 	
 	return 0;
 }
-
