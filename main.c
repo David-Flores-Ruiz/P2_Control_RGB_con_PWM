@@ -23,6 +23,7 @@
 #include "RGB.h"
 #include "menu.h"
 #include "control.h"
+#include "FlexTimer.h"
 
 
 /** \brief This is the configuration structure to configure the LCD.
@@ -38,6 +39,15 @@ const spi_config_t g_spi_config = {
 					SPI_BAUD_RATE_8,
 					SPI_FSIZE_8,
 					{GPIO_D, bit_0, bit_1, bit_2, bit_3} };
+
+/** \brief This is the configuration structure to configure the 3 FTM.
+ * Note that is constants and it is because is only a variable used for configuration*/
+const FTM_config_t g_FTM_config = {
+					FTM_0,
+					FTM_DISABLE_WPDIS,
+					FTM_DISABLE_FTMEN,
+					0x00FF,
+					FTM_PWM_EdgeAligned_High };
 
 /*! This array hold the initial picture that is shown in the LCD. Note that extern should be avoided*/
 //extern const uint8_t ITESO[504];
@@ -68,6 +78,27 @@ int main(void)
 	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
 	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
 
+// MAIN FLEX TIMER	para debug...
+	int16_t duty_cycle = 0x00FF / 2;
+	uint8_t input_port_a = 0, input_port_c = 0;
+	gpio_pin_control_register_t pcr_pin_a_4 = GPIO_MUX1 | GPIO_PE | GPIO_PS;
+	gpio_pin_control_register_t pcr_pin_a_6 = GPIO_MUX1 | GPIO_PE | GPIO_PS;
+	/**Clock gating for port A and C*/
+	SIM->SCGC5 |= GPIO_CLOCK_GATING_PORTA | GPIO_CLOCK_GATING_PORTC;
+	PORTC->PCR[1] = PORT_PCR_MUX(0x4);
+	/**Pin control register configuration for GPIO*/
+	PORTA->PCR[bit_4] = pcr_pin_a_4;
+	PORTC->PCR[bit_6] = pcr_pin_a_6;
+	/**Pin 4 and pin 6 of port A and C, respectively as inputs*/
+	GPIOA->PDDR &= ~(bit_4);
+	GPIOC->PDDR &= ~(bit_6);
+	/**Configuration function for FlexTimer*/
+	FlexTimer_Init(&g_FTM_config);
+//
+
+
+
+
 	for (;;)
 	{
 		//Menu_Inicial( );
@@ -91,6 +122,32 @@ int main(void)
 		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
 		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
 		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
+
+		/**Reading the input ports for port A and C*/
+		input_port_c = GPIOC->PDIR;
+		input_port_c &= (0x40);
+		input_port_c = input_port_c >> 6;
+		input_port_a = GPIOA->PDIR;
+		input_port_a &= (0x10);
+		input_port_a = input_port_a >> 4;
+
+// FLEX TIMER Ciclo infinito del Profe para debug:
+		if(0 == input_port_a)
+		{
+			duty_cycle = duty_cycle + 10;
+			FlexTimer_update_channel_value(duty_cycle);
+			delay(20000);
+		}
+		if(0 == input_port_c)
+		{
+			duty_cycle = duty_cycle - 10;
+			FlexTimer_update_channel_value(duty_cycle);
+			delay(20000);
+		}
+
+//
+
+
 
 	}
 	
