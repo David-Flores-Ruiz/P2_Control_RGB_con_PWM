@@ -11,6 +11,10 @@
 #include "stdint.h"
 
 	void Menu_Inicial(void);
+
+	void Menu_RGB_MANUAL(void);
 	void Menu_RGB_ADC(void);
+	void Menu_RGB_SECUENCIA(void);
+	void Menu_RGB_FRECUENCIA(void);
 
 #endif /* MENU_H_ */

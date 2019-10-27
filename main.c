@@ -22,6 +22,7 @@
 #include "stdint.h"
 #include "RGB.h"
 #include "menu.h"
+#include "control.h"
 
 
 /** \brief This is the configuration structure to configure the LCD.
@@ -70,7 +71,10 @@ int main(void)
 	for (;;)
 	{
 		//Menu_Inicial( );
-		Menu_RGB_ADC();
+		//Menu_RGB_ADC();
+
+		FSM_control();
+
 		GPIO_decode_intr_PORTB (GPIO_B);
 		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
 		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);

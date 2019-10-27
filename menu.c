@@ -30,6 +30,11 @@ void Menu_Inicial(void) {
 	LCD_nokia_goto_xy(0, 3);
 	LCD_nokia_send_string(string_4); /*! It print a string stored in an array*/
 }
+
+void Menu_RGB_MANUAL(void) {
+
+}
+
 void Menu_RGB_ADC(void) {
 	uint8_t string_0[]="Volta "; /*! String to be printed in the LCD*/
 	uint8_t string_1[6]="XX.YY";
@@ -48,7 +53,7 @@ void Menu_RGB_ADC(void) {
 	LCD_nokia_send_string(&string_3[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_5[0]); /*! It print a string stored in an array*/
 }
-void Menu_RGB_secuencia(void) {
+void Menu_RGB_SECUENCIA(void) {
 	uint8_t string_1[]="Z";
 	uint8_t string_2[]="R";
 	uint8_t string_3[]="V";
@@ -56,3 +61,9 @@ void Menu_RGB_secuencia(void) {
 	uint8_t string_5[]="M";
 	uint8_t string_6[]="B";
 }
+
+void Menu_RGB_FRECUENCIA(void){
+
+}
+
+
