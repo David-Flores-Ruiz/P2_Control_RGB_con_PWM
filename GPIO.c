@@ -242,7 +242,7 @@ uint8_t GPIO_get_irq_status(gpio_port_name_t gpio)	// flag SW
 {
 	uint8_t status = 0;
 
-	if(GPIO_A == gpio) {
+	if (GPIO_A == gpio) {
 		status = g_intr_status_flag.flag_port_a;
 	}
 	if (GPIO_B == gpio) {
@@ -251,18 +251,31 @@ uint8_t GPIO_get_irq_status(gpio_port_name_t gpio)	// flag SW
 	if (GPIO_C == gpio) {
 		status = g_intr_status_flag.flag_port_c;
 	}
+	if (GPIO_D == gpio) {
+		status = g_intr_status_flag.flag_port_d;
+	}
+	if (GPIO_E == gpio) {
+		status = g_intr_status_flag.flag_port_e;
+	}
 	return (status);
 }
 
 void GPIO_clear_irq_status(gpio_port_name_t gpio)	// flag SW
 {
-	if(GPIO_A == gpio)
-	{
+	if (GPIO_A == gpio) {
 		g_intr_status_flag.flag_port_a = FALSE;
 	}
-	else
-	{
+	if (GPIO_B == gpio) {
+		g_intr_status_flag.flag_port_b = FALSE;
+	}
+	if (GPIO_C == gpio) {
 		g_intr_status_flag.flag_port_c = FALSE;
+	}
+	if (GPIO_D == gpio) {
+		g_intr_status_flag.flag_port_d = FALSE;
+	}
+	if (GPIO_E == gpio) {
+		g_intr_status_flag.flag_port_e = FALSE;
 	}
 }
 
@@ -344,24 +357,23 @@ uint32_t GPIO_read_port(gpio_port_name_t port_name)			   //(f(x) #7	done!
 void GPIO_set_pin(gpio_port_name_t port_name, uint8_t pin)	   // f(x) #8	done! + good perform
 {
 	switch (port_name) {
-	case GPIO_A:
-		GPIOA->PSOR = (1<<pin);
-		break;
-	case GPIO_B:/** GPIO B is selected*/
-		GPIOB->PSOR = (1<<pin);
-
-		break;
-	case GPIO_C:/** GPIO C is selected*/
-		GPIOC->PSOR = (1<<pin);
-		break;
-	case GPIO_D:/** GPIO D is selected*/
-		GPIOD->PSOR = (1<<pin);
-		break;
-	case GPIO_E:/** GPIO E is selected*/
-		GPIOE->PSOR = (1<<pin);
-		break;
-	default:/**If doesn't exist the option*/
-		break;
+		case GPIO_A:
+			GPIOA->PSOR = (1<<pin);
+			break;
+		case GPIO_B:/** GPIO B is selected*/
+			GPIOB->PSOR = (1<<pin);
+			break;
+		case GPIO_C:/** GPIO C is selected*/
+			GPIOC->PSOR = (1<<pin);
+			break;
+		case GPIO_D:/** GPIO D is selected*/
+			GPIOD->PSOR = (1<<pin);
+			break;
+		case GPIO_E:/** GPIO E is selected*/
+			GPIOE->PSOR = (1<<pin);
+			break;
+		default:/**If doesn't exist the option*/
+			break;
 	}
 }
 
@@ -395,45 +407,45 @@ uint32_t GPIO_read_pin(gpio_port_name_t port_name, uint8_t pin)
 void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin)   // f(x) #10	done! + good perform
 {
 	switch (port_name) {
-	case GPIO_A:
-		GPIOA->PCOR = (1<<pin);
-		break;
-	case GPIO_B:/* GPIO B is selected*/
-		GPIOB->PCOR = (1<<pin);
-		break;
-	case GPIO_C:/* GPIO C is selected*/
-		GPIOC->PCOR = (1<<pin);
-		break;
-	case GPIO_D:/* GPIO D is selected*/
-		GPIOD->PCOR = (1<<pin);
-		break;
-	case GPIO_E: /* GPIO E is selected*/
-		GPIOE->PCOR = (1<<pin); // ON - GREEN pin26.
-		break;
-	default:/*If doesn't exist the option*/
-		break;
+		case GPIO_A:
+			GPIOA->PCOR = (1<<pin);
+			break;
+		case GPIO_B:/* GPIO B is selected*/
+			GPIOB->PCOR = (1<<pin);
+			break;
+		case GPIO_C:/* GPIO C is selected*/
+			GPIOC->PCOR = (1<<pin);
+			break;
+		case GPIO_D:/* GPIO D is selected*/
+			GPIOD->PCOR = (1<<pin);
+			break;
+		case GPIO_E: /* GPIO E is selected*/
+			GPIOE->PCOR = (1<<pin); // ON - GREEN pin26.
+			break;
+		default:/*If doesn't exist the option*/
+			break;
 	}
 }
 
 void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
 {
 	switch (port_name) {
-	case GPIO_A:
-		GPIOA->PTOR = (1 << pin);
-		break;
-	case GPIO_B:/** GPIO B is selected*/
-		GPIOB->PTOR = (1 << pin);
-		break;
-	case GPIO_C:/** GPIO C is selected*/
-		GPIOC->PTOR = (1 << pin);
-		break;
-	case GPIO_D:/** GPIO D is selected*/
-		GPIOD->PTOR = (1 << pin);
-		break;
-	case GPIO_E:/** GPIO E is selected*/
-		GPIOE->PTOR = (1 << pin);
-		break;
-	default:/**If doesn't exist the option*/
-		break;
+		case GPIO_A:
+			GPIOA->PTOR = (1 << pin);
+			break;
+		case GPIO_B:/** GPIO B is selected*/
+			GPIOB->PTOR = (1 << pin);
+			break;
+		case GPIO_C:/** GPIO C is selected*/
+			GPIOC->PTOR = (1 << pin);
+			break;
+		case GPIO_D:/** GPIO D is selected*/
+			GPIOD->PTOR = (1 << pin);
+			break;
+		case GPIO_E:/** GPIO E is selected*/
+			GPIOE->PTOR = (1 << pin);
+			break;
+		default:/**If doesn't exist the option*/
+			break;
 	}
 }

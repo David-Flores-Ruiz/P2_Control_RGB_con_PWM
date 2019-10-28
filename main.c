@@ -47,8 +47,8 @@ const FTM_config_t g_FTM_config = {
 					FTM_0,
 					FTM_DISABLE_WPDIS,
 					FTM_DISABLE_FTMEN,
-					0x00FF,
-					FTM_PWM_EdgeAligned_High,
+					0x00FF,						// MOD
+					FTM_PWM_EdgeAligned_High,	// CnSC y CnV asigna a FTM0_CH0, FTM0_CH1, FTM0_CH2
 					GPIO_MUX4,
 					{GPIO_C, bit_1, bit_2, bit_3} };
 
