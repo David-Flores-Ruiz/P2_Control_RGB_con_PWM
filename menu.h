@@ -9,6 +9,7 @@
 #define MENU_H_
 
 #include "stdint.h"
+#include "PIT.h"
 
 	void Menu_Inicial(void);
 

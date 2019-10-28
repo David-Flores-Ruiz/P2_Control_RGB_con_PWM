@@ -203,7 +203,8 @@ void GPIO_data_direction_pin(gpio_port_name_t port_name, gpio_port_direction_t s
  	 \param[in] data Value to be written.
  	 \return void
  */
-void GPIO_write_port(gpio_port_name_t port_name, uint32_t data); // f(x) #6
+void GPIO_write_port(gpio_port_name_t portName, uint32_t data);// f(x) #6
+
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/

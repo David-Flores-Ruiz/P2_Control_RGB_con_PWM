@@ -23,6 +23,8 @@
 #include "RGB.h"
 #include "menu.h"
 #include "control.h"
+#include "FlexTimer.h"
+#include "RGB_Manual.h"
 
 
 /** \brief This is the configuration structure to configure the LCD.
@@ -38,6 +40,17 @@ const spi_config_t g_spi_config = {
 					SPI_BAUD_RATE_8,
 					SPI_FSIZE_8,
 					{GPIO_D, bit_0, bit_1, bit_2, bit_3} };
+
+/** \brief This is the configuration structure to configure the 3 FTM.
+ * Note that is constants and it is because is only a variable used for configuration*/
+const FTM_config_t g_FTM_config = {
+					FTM_0,
+					FTM_DISABLE_WPDIS,
+					FTM_DISABLE_FTMEN,
+					0x00FF,						// MOD
+					FTM_PWM_EdgeAligned_High,	// CnSC y CnV asigna a FTM0_CH0, FTM0_CH1, FTM0_CH2
+					GPIO_MUX4,
+					{GPIO_C, bit_1, bit_2, bit_3} };
 
 /*! This array hold the initial picture that is shown in the LCD. Note that extern should be avoided*/
 //extern const uint8_t ITESO[504];
@@ -60,37 +73,40 @@ int main(void)
 	SPI_init(&g_spi_config); /*! Configuration function for the LCD port*/
 	LCD_nokia_init(); /*! Configuration function for the LCD */
 
-	uint8_t* ptr_array_ITESO = LCD_nokia_ITESO();
-
 	LCD_nokia_clear();
 
-	uint8_t state_B0 = 0;
-	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
-	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
+//	uint8_t state_B0 = 0;
+//	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
+//	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
+
+
+	/**Configuration function for FlexTimer*/
+	FlexTimer_Init(&g_FTM_config);
+
 
 	for (;;)
 	{
-		//Menu_Inicial( );
-		//Menu_RGB_ADC();
+		GPIO_decode_intr_PORTB (GPIO_B);
 
 		FSM_control();
 
-		GPIO_decode_intr_PORTB (GPIO_B);
-		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
-		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
-		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
-		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
-		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
-		state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B5);
-		state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B6);
+			FSM_RGB_Manual();
 
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B1);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B2);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B3);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
-		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
+//		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
+//		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
+//		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
+//		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
+//		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
+//		state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B5);
+//		state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B6);
+
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B1);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B2);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B3);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
+//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
 
 	}
 	
