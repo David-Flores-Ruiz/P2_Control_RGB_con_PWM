@@ -10,7 +10,10 @@
 #include <stdio.h>
 #include "GPIO.h"
 #include "PIT.h"
+#include "menu.h"
+#include "RGB.h"
 #include "LCD_nokia.h"
+#include "LCD_nokia_images.h"
 
 #define DEBUG_ON				/* Para proposito de DEBUG */
 
@@ -39,11 +42,13 @@ void FSM_control() {
 	switch (current_state)
 	{
 		case FONDO_PANTALLA:
+			LCD_nokia_clear();
 			LCD_nokia_bitmap(ptr_array_PUMA); /*! It prints an array that hold an image, in this case is the initial picture*/
 			delay(1500);
 
 			if (state_B0 == TRUE) {
 				current_state = MENU_INICIAL; //** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
 			} else {
 				current_state = FONDO_PANTALLA; //** No cambia */
 			}
@@ -56,16 +61,23 @@ void FSM_control() {
 
 			if (state_B0 == TRUE) {
 				current_state = FONDO_PANTALLA;	//** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
 			} else if (state_B1 == TRUE){
 				current_state = RGB_MANUAL;		//** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B1);
 			} else if (state_B2 == TRUE){
 				current_state = RGB_ADC;		//** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B2);
 			} else if (state_B3 == TRUE){
 				current_state = RGB_SECUENCIA;	//** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B3);
 			} else if (state_B4 == TRUE){
 				current_state = RGB_FRECUENCIA;	//** Transicion al siguiente estado */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
 			} else {
 				current_state = MENU_INICIAL;	//** No cambia */
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
+				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
 			}
 
 			break; // end case MENU_INICIAL

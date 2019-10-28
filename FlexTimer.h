@@ -13,6 +13,8 @@
 
 
 #include "MK64F12.h"
+#include <stdint.h>
+#include "GPIO.h"
 
 #define FLEX_TIMER_CLKS_0  (0U)
 #define FLEX_TIMER_CLKS_1  (1U)
@@ -45,6 +47,16 @@ typedef enum {FTM_0,
 			  FTM_2
 			  } FTM_channel_t;
 
+typedef enum {FTM0_CH0,
+			  FTM0_CH1,
+			  FTM0_CH2,
+			  FTM0_CH3,
+			  FTM0_CH4,
+			  FTM0_CH5,
+			  FTM0_CH6,
+			  FTM0_CH7,
+		  	  } FTM0_Specific_OutputChannel_t;
+
 /*Type for WPDIS configuration*/
 typedef enum {FTM_DISABLE_WPDIS, FTM_ENABLE_WPDIS} FTM_enable_WPDIS_t;
 
@@ -54,6 +66,14 @@ typedef enum {FTM_DISABLE_FTMEN, FTM_ENABLE_FTMEN} FTM_enable_FTMEN_t;
 /*Type for Operation Mode configuration*/
 typedef enum {FTM_PWM_EdgeAligned_High, FTM_InputCapture_Falling} FTM_OpMode_t;
 
+/*Type for FTM configuration that activates the output FTM0_CH0... */
+typedef struct{
+	gpio_port_name_t gpio_port_name;
+	uint32_t FTM0_CH0;
+	uint32_t FTM0_CH1;
+	uint32_t FTM0_CH2;
+} FTM_port_config_t;
+
 /*Type that is used for FTM configuration, It contains all the information needed for a SPI module*/
 typedef struct
 {
@@ -62,10 +82,12 @@ typedef struct
 	FTM_enable_FTMEN_t FTM_FTMEN;
 	uint32_t defaultValue;
 	FTM_OpMode_t OperationMode;
+	gpio_pin_control_register_t pin_config;
+	FTM_port_config_t FTM_gpio_port;
 } FTM_config_t;
 
 
-void FlexTimer_update_channel_value(int16_t channel_value);
+void FlexTimer_update_channel_value(int16_t channel_value, FTM0_Specific_OutputChannel_t FTM0_channel);
 
 void FTM_clk (FTM_channel_t channel);
 

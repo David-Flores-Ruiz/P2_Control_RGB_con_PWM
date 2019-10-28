@@ -11,7 +11,7 @@
 #include "MK64F12.h"
 #include "GPIO.h"
 #include "bits.h"
-#include <stdio.h>	// DEBUG teclado matricial
+#include <stdio.h>	// DEBUG printf
 
 static void (*gpio_B_callback)  (void) = 0; // teclado
 
@@ -59,9 +59,9 @@ void GPIO_decode_intr_PORTB (gpio_port_name_t port_name){
 		} else if (PT_B6 == PRESS) {
 			g_intr_status_portb_flag.flag_PORT_B6 = TRUE;
 		}
-	}
 
-	g_intr_status_flag.flag_port_b = FALSE; // Apagamos bandera de SW de INT_PORTB
+		g_intr_status_flag.flag_port_b = FALSE; // Apagamos bandera de SW de INT_PORTB
+	}
 }
 
 uint8_t GPIO_get_PORTB_SWs_status(gpio_port_name_t gpio, SWs_externos_t sw_number )	// flag SW
@@ -179,9 +179,10 @@ uint8_t GPIO_pin_control_register(gpio_port_name_t port_name, uint8_t pin,
 		break;
 	case GPIO_E: /** GPIO E is selected*/
 		PORTE->PCR[pin] = *pin_control_register;
+		break;
 	default:/**If doesn't exist the option*/
 		return (FALSE);
-		break;
+
 	}
 	/**Successful configuration*/
 	return (TRUE);
@@ -190,17 +191,21 @@ uint8_t GPIO_pin_control_register(gpio_port_name_t port_name, uint8_t pin,
 void PORTA_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_a = TRUE; // bandera de SW de SW3
+	printf("Presiono SW3 \n");
 	GPIO_clear_interrupt(GPIO_A);
 }
+
 void PORTB_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_b = TRUE;	// bandera de SW de 7 SW´S EXTERNOS
+	printf("Presiono SWs Externos \n");
 	GPIO_clear_interrupt(GPIO_B);
 }
 
 void PORTC_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_c = TRUE;	// bandera de SW de SW2
+	printf("Presiono SW2 \n");
 	GPIO_clear_interrupt(GPIO_C);
 }
 
@@ -215,7 +220,7 @@ void GPIO_clear_interrupt(gpio_port_name_t port_name)
 			PORTB->ISFR=0xFFFFFFFF;
 			break;
 		case GPIO_C: /** GPIO C is selected*/
-			PORTC->ISFR = 0xFFFFFFFF;
+			PORTC->ISFR=0xFFFFFFFF;
 			break;
 		case GPIO_D: /** GPIO D is selected*/
 			PORTD->ISFR=0xFFFFFFFF;
@@ -295,12 +300,14 @@ void GPIO_data_direction_pin (gpio_port_name_t port_name, gpio_port_direction_t 
 		break;
 	case GPIO_E: /** GPIO E is selected*/
 		GPIOE->PDDR |= (state == 1) ? (1 << pin) : (0 << pin);
+		break;
 	default:/**If doesn't exist the option*/
-
 		break;
 	}
 }
-void GPIO_write_port(gpio_port_name_t portName, uint32_t data);// f(x) #6
+void GPIO_write_port(gpio_port_name_t portName, uint32_t data){
+															   // f(x) #6
+}
 uint32_t GPIO_read_port(gpio_port_name_t port_name)			   //(f(x) #7	done!
 {
 	switch (port_name) {
@@ -318,6 +325,7 @@ uint32_t GPIO_read_port(gpio_port_name_t port_name)			   //(f(x) #7	done!
 		break;
 	case GPIO_E: /** GPIO E is selected*/
 		port_readValue = GPIOE->PDIR;		 // Lee completo el GPIOE
+		break;
 	default:/**If doesn't exist the option*/
 
 		break;
@@ -343,6 +351,7 @@ void GPIO_set_pin(gpio_port_name_t port_name, uint8_t pin)	   // f(x) #8	done! +
 		break;
 	case GPIO_E:/** GPIO E is selected*/
 		GPIOE->PSOR = (1<<pin);
+		break;
 	default:/**If doesn't exist the option*/
 
 		break;
@@ -392,6 +401,7 @@ void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin)   // f(x) #10	done!
 		break;
 	case GPIO_E: /* GPIO E is selected*/
 		GPIOE->PCOR = (1<<pin); // ON - GREEN pin26.
+		break;
 	default:/*If doesn't exist the option*/
 
 		break;
@@ -415,6 +425,7 @@ void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
 		break;
 	case GPIO_E:/** GPIO E is selected*/
 		GPIOE->PTOR = (1 << pin);
+		break;
 	default:/**If doesn't exist the option*/
 
 		break;

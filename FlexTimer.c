@@ -13,13 +13,45 @@
 
 #include "FlexTimer.h"
 #include "MK64F12.h"
+#include "GPIO.h"
 
 
-
-void FlexTimer_update_channel_value(int16_t channel_value)
+void FlexTimer_update_channel_value(int16_t channel_value, FTM0_Specific_OutputChannel_t FTM0_channel)
 {
-	/**Assigns a new value for the duty cycle*/
-	FTM0->CONTROLS[0].CnV = channel_value;
+	if (FTM0_CH0 == FTM0_channel){
+		/**Assigns a new value for the duty cycle*/
+		FTM0->CONTROLS[0].CnV = channel_value;
+	}
+
+	if (FTM0_CH1 == FTM0_channel){
+		/**Assigns a new value for the duty cycle*/
+		FTM0->CONTROLS[1].CnV = channel_value;
+	}
+
+	if (FTM0_CH2 == FTM0_channel){
+		/**Assigns a new value for the duty cycle*/
+		FTM0->CONTROLS[2].CnV = channel_value;
+	}
+
+	if (FTM0_CH3 == FTM0_channel){
+		///
+	}
+
+	if (FTM0_CH4 == FTM0_channel){
+		///
+	}
+
+	if (FTM0_CH5 == FTM0_channel){
+		///
+	}
+
+	if (FTM0_CH6 == FTM0_channel){
+		///
+	}
+
+	if (FTM0_CH7 == FTM0_channel){
+		///
+	}
 }
 
 
@@ -118,6 +150,8 @@ void FTM_CnSC_OperationMode(FTM_channel_t channel, FTM_OpMode_t OpMode)
 	if (FTM_0 == channel) {
 		if (FTM_PWM_EdgeAligned_High == OpMode) {
 			FTM0->CONTROLS[0].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
+			FTM0->CONTROLS[1].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
+			FTM0->CONTROLS[2].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
 		}
 		if (FTM_InputCapture_Falling == OpMode) {
 			FTM0->CONTROLS[0].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
@@ -125,18 +159,18 @@ void FTM_CnSC_OperationMode(FTM_channel_t channel, FTM_OpMode_t OpMode)
 	}
 	if (FTM_1 == channel) {
 		if (FTM_PWM_EdgeAligned_High == OpMode) {
-			FTM1->CONTROLS[1].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
+			FTM1->CONTROLS[0].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
 		}
 		if (FTM_InputCapture_Falling == OpMode) {
-			FTM1->CONTROLS[1].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
+			FTM1->CONTROLS[0].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
 		}
 	}
 	if (FTM_2 == channel) {
 		if (FTM_PWM_EdgeAligned_High == OpMode) {
-			FTM2->CONTROLS[2].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
+			FTM2->CONTROLS[0].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
 		}
 		if (FTM_InputCapture_Falling == OpMode) {
-			FTM2->CONTROLS[2].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
+			FTM2->CONTROLS[0].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
 		}
 	}
 }
@@ -145,15 +179,17 @@ void FTM_CnV_DutyCycle_50(FTM_channel_t channel)
 {
 	if (FTM_0 == channel) {
 		/**Assign a duty cycle of 50%*/
-		FTM0->CONTROLS[0].CnV = FTM0->MOD/2;
+		FTM0->CONTROLS[0].CnV = 0x00;
+		FTM0->CONTROLS[1].CnV = 0x00;
+		FTM0->CONTROLS[2].CnV = 0x00;
 	}
 	if (FTM_1 == channel) {
 		/**Assign a duty cycle of 50%*/
-		FTM1->CONTROLS[1].CnV = FTM0->MOD/2;
+		FTM1->CONTROLS[0].CnV = 0x00;
 	}
 	if (FTM_2 == channel) {
 		/**Assign a duty cycle of 50%*/
-		FTM2->CONTROLS[2].CnV = FTM0->MOD/2;
+		FTM2->CONTROLS[0].CnV = 0x00;
 	}
 }
 
@@ -176,6 +212,9 @@ void FTM_SC_ConfigTime(FTM_channel_t channel)
 void FlexTimer_Init(const FTM_config_t* config_struct)
 {
 	FTM_clk(config_struct->FTM_channel);
+	GPIO_pin_control_register(config_struct->FTM_gpio_port.gpio_port_name, config_struct->FTM_gpio_port.FTM0_CH0, &(config_struct->pin_config));
+	GPIO_pin_control_register(config_struct->FTM_gpio_port.gpio_port_name, config_struct->FTM_gpio_port.FTM0_CH1, &(config_struct->pin_config));
+	GPIO_pin_control_register(config_struct->FTM_gpio_port.gpio_port_name, config_struct->FTM_gpio_port.FTM0_CH2, &(config_struct->pin_config));
 	FTM_WPDIS(config_struct->FTM_channel, config_struct->FTM_WPDIS);
 	FTM_FTMEN(config_struct->FTM_channel, config_struct->FTM_FTMEN);
 	FTM_MOD(config_struct->FTM_channel, config_struct->defaultValue);
