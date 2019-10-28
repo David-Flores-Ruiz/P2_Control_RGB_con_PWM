@@ -11,9 +11,11 @@
 #include "MK64F12.h"
 #include "GPIO.h"
 #include "bits.h"
-#include <stdio.h>	// DEBUG printf
+#include <stdio.h>	// DEBUG... printf();
 
-static void (*gpio_B_callback)  (void) = 0; // teclado
+#define DEBUG_ON				/* Para proposito de DEBUG */
+
+static void (*gpio_B_callback)  (void) = 0;
 
 
 static gpio_interrupt_flags_t g_intr_status_flag  = {0};
@@ -131,7 +133,7 @@ void GPIO_callback_init(gpio_port_name_t port_name,void (*handler)(void))
 	if(GPIO_B == port_name)
 	{
 		if(gpio_B_callback == 0)
-			gpio_B_callback = handler;	// Inicializa función del Teclado
+			gpio_B_callback = handler;	// Inicializa función del Callback
 	}
 }
 
@@ -182,7 +184,6 @@ uint8_t GPIO_pin_control_register(gpio_port_name_t port_name, uint8_t pin,
 		break;
 	default:/**If doesn't exist the option*/
 		return (FALSE);
-
 	}
 	/**Successful configuration*/
 	return (TRUE);
@@ -191,21 +192,27 @@ uint8_t GPIO_pin_control_register(gpio_port_name_t port_name, uint8_t pin,
 void PORTA_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_a = TRUE; // bandera de SW de SW3
+#ifdef DEBUG_ON
 	printf("Presiono SW3 \n");
+#endif
 	GPIO_clear_interrupt(GPIO_A);
 }
 
 void PORTB_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_b = TRUE;	// bandera de SW de 7 SW´S EXTERNOS
+#ifdef DEBUG_ON
 	printf("Presiono SWs Externos \n");
+#endif
 	GPIO_clear_interrupt(GPIO_B);
 }
 
 void PORTC_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_c = TRUE;	// bandera de SW de SW2
+#ifdef DEBUG_ON
 	printf("Presiono SW2 \n");
+#endif
 	GPIO_clear_interrupt(GPIO_C);
 }
 
@@ -228,7 +235,6 @@ void GPIO_clear_interrupt(gpio_port_name_t port_name)
 		default: /** GPIO E is selected*/
 			PORTE->ISFR=0xFFFFFFFF;
 			break;
-
 	}// end switch
 }
 
@@ -279,10 +285,10 @@ void GPIO_data_direction_port(gpio_port_name_t port_name, gpio_port_direction_t 
 		GPIOE->PDDR = (direction == 1) ? 0xFFFFFFFF : GPIO_INPUT;
 		break;
 	default:/**If doesn't exist the option*/
-
 		break;
 	}
 }
+
 void GPIO_data_direction_pin (gpio_port_name_t port_name, gpio_port_direction_t state, uint8_t pin)// f(x) #5	done + good perform!
 {
 	switch (port_name) {
@@ -305,9 +311,11 @@ void GPIO_data_direction_pin (gpio_port_name_t port_name, gpio_port_direction_t 
 		break;
 	}
 }
+
 void GPIO_write_port(gpio_port_name_t portName, uint32_t data){
 															   // f(x) #6
 }
+
 uint32_t GPIO_read_port(gpio_port_name_t port_name)			   //(f(x) #7	done!
 {
 	switch (port_name) {
@@ -327,12 +335,12 @@ uint32_t GPIO_read_port(gpio_port_name_t port_name)			   //(f(x) #7	done!
 		port_readValue = GPIOE->PDIR;		 // Lee completo el GPIOE
 		break;
 	default:/**If doesn't exist the option*/
-
 		break;
 	}// end switch
 	/**Successful configuration*/
 	return (port_readValue);
 }// end function
+
 void GPIO_set_pin(gpio_port_name_t port_name, uint8_t pin)	   // f(x) #8	done! + good perform
 {
 	switch (port_name) {
@@ -353,10 +361,10 @@ void GPIO_set_pin(gpio_port_name_t port_name, uint8_t pin)	   // f(x) #8	done! +
 		GPIOE->PSOR = (1<<pin);
 		break;
 	default:/**If doesn't exist the option*/
-
 		break;
 	}
 }
+
 uint32_t GPIO_read_pin(gpio_port_name_t port_name, uint8_t pin)
 {
 	uint32_t mask_pin = 0;
@@ -377,13 +385,13 @@ uint32_t GPIO_read_pin(gpio_port_name_t port_name, uint8_t pin)
 			pin_readValue = GPIOE->PDIR;		 // Lee solo el pin de interés
 			break;
 		default:/**If doesn't exist the option*/
-
 			break;
 		}// end switch
 		/**Successful configuration*/
 		mask_pin = pin_readValue & (1 << pin);
 		return (mask_pin);	 // Mask for read the especific pin
 }// end fuction
+
 void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin)   // f(x) #10	done! + good perform
 {
 	switch (port_name) {
@@ -403,10 +411,10 @@ void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin)   // f(x) #10	done!
 		GPIOE->PCOR = (1<<pin); // ON - GREEN pin26.
 		break;
 	default:/*If doesn't exist the option*/
-
 		break;
 	}
 }
+
 void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
 {
 	switch (port_name) {
@@ -415,7 +423,6 @@ void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
 		break;
 	case GPIO_B:/** GPIO B is selected*/
 		GPIOB->PTOR = (1 << pin);
-
 		break;
 	case GPIO_C:/** GPIO C is selected*/
 		GPIOC->PTOR = (1 << pin);
@@ -427,8 +434,6 @@ void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
 		GPIOE->PTOR = (1 << pin);
 		break;
 	default:/**If doesn't exist the option*/
-
 		break;
 	}
-
 }
