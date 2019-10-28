@@ -14,11 +14,21 @@
 #include "RGB.h"
 #include "LCD_nokia.h"
 #include "LCD_nokia_images.h"
+#include "RGB_Manual.h"
 
 #define DEBUG_ON				/* Para proposito de DEBUG */
 
 static FSM_flags_t g_FSM_status_flags = {0};	//** Banderas de activacion de cada submenu */
 int8_t readArray[4] = { '0', '0', '0', '0' };
+
+void activateFSM_RGB_MANUAL() {
+	if (g_FSM_status_flags.flag_RGB_MANUAL == TRUE) {
+		FSM_RGB_Manual();
+	}
+	if(g_FSM_status_flags.flag_RGB_MANUAL == FALSE) {
+		// Stop FSM
+	}
+}
 
 void FSM_control() {
 	static State_t current_state = FONDO_PANTALLA; //** Estado Inicial del Sistema */
@@ -55,7 +65,6 @@ void FSM_control() {
 			break; // end case FONDO_PANTALLA
 
 		case MENU_INICIAL:
-
 			LCD_nokia_clear();/*! It clears the information printed in the LCD*/
 			Menu_Inicial( );	//** Mostramos en LCD el Menu principal */
 

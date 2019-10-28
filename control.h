@@ -30,6 +30,8 @@ typedef struct {
 	uint8_t imparOn 	  :1;
 } FSM_flags_t;
 
+void activateFSM_RGB_MANUAL();
+
 void Wait_1_second(); //** Para el blink de los leds */
 
 void FSM_control();	//** Máquina de estados general */

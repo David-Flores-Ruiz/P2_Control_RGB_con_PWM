@@ -93,9 +93,9 @@ int main(void)
 
 		GPIO_decode_intr_PORTB (GPIO_B);
 
-		//FSM_control();
+		FSM_control();
 
-		FSM_RGB_Manual();
+//		FSM_RGB_Manual();
 
 //		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
 //		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
