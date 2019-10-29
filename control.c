@@ -40,24 +40,26 @@ void FSM_control() {
 
 	uint8_t* ptr_array_PUMA = LCD_nokia_PUMA ();
 
-	state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
-	state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
-	state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
-	state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
-	state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
+	if (g_FSM_status_flags.flag_RGB_MANUAL == FALSE)
+	{
+		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
+		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
+		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
+		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
+		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
 
-	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
-	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
+		statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
+		statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
+	}
 
 	switch (current_state)
 	{
 		case FONDO_PANTALLA:
-			LCD_nokia_clear();
 			LCD_nokia_bitmap(ptr_array_PUMA); /*! It prints an array that hold an image, in this case is the initial picture*/
-			delay(1500);
 
 			if (state_B0 == TRUE) {
 				current_state = MENU_INICIAL; //** Transicion al siguiente estado */
+				LCD_nokia_clear(); //** Limpia al cambio de pantalla 1 sola vez */
 				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
 			} else {
 				current_state = FONDO_PANTALLA; //** No cambia */
@@ -65,11 +67,11 @@ void FSM_control() {
 			break; // end case FONDO_PANTALLA
 
 		case MENU_INICIAL:
-			LCD_nokia_clear();/*! It clears the information printed in the LCD*/
 			Menu_Inicial( );	//** Mostramos en LCD el Menu principal */
 
 			if (state_B0 == TRUE) {
 				current_state = FONDO_PANTALLA;	//** Transicion al siguiente estado */
+				LCD_nokia_clear(); //** Limpia al cambio de pantalla 1 sola vez */
 				GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
 			} else if (state_B1 == TRUE){
 				current_state = RGB_MANUAL;		//** Transicion al siguiente estado */

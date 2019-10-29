@@ -28,8 +28,8 @@ void FSM_RGB_Manual(void) {
 	state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
 	state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
 	state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
-	state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
-	state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
+	state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B5);
+	state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B6);
 
 	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
 	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);

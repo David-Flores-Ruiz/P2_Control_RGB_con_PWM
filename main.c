@@ -19,13 +19,15 @@
 #include "Bits.h"
 #include "LCD_nokia.h"
 #include "LCD_nokia_images.h"
-#include "stdint.h"
+#include <stdint.h>
+#include <stdio.h>
 #include "RGB.h"
 #include "menu.h"
 #include "control.h"
 #include "FlexTimer.h"
 #include "RGB_Manual.h"
-
+#include "ADC.h"
+#include "PIT.h"
 
 /** \brief This is the configuration structure to configure the LCD.
  * Note that is constants and it is because is only a variable used for configuration*/
@@ -73,8 +75,6 @@ int main(void)
 	SPI_init(&g_spi_config); /*! Configuration function for the LCD port*/
 	LCD_nokia_init(); /*! Configuration function for the LCD */
 
-//	uint8_t* ptr_array_ITESO = LCD_nokia_ITESO();
-
 	LCD_nokia_clear();
 
 //	uint8_t state_B0 = 0;
@@ -86,16 +86,27 @@ int main(void)
 	FlexTimer_Init(&g_FTM_config);
 
 
+	/**Configuration function for ADC*/
+	ADC_clk(ADC_0);
+	ADC_conversion_mode(ADC_0);
+	ADC_calibration(ADC_0);
+	ADC_differential_mode_disable(ADC_0);
+
+	uint8_t POT_voltage = 0;
+	My_float_t AVR_voltage_map = 0;
+
 	for (;;)
 	{
-		//Menu_Inicial( );
-		//Menu_RGB_ADC();
-
 		GPIO_decode_intr_PORTB (GPIO_B);
 
-		FSM_control();
+		//FSM_control();
 
-//		FSM_RGB_Manual();
+		//	FSM_RGB_Manual();
+			POT_voltage = 0;
+			POT_voltage = ADC_result(ADC_0);
+
+			AVR_voltage_map = (POT_voltage*3.10) / 240;
+			printf("Voltage to LCD: %u  \n", (uint8_t)AVR_voltage_map);
 
 //		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
 //		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);

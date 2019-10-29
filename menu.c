@@ -17,13 +17,10 @@ void Menu_Inicial(void) {
 
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_1[0]); /*! It print a string stored in an array*/
-	delay(50);
 	LCD_nokia_goto_xy(0, 1);
 	LCD_nokia_send_string(string_2); /*! It print a string stored in an array*/
-	delay(50);
 	LCD_nokia_goto_xy(0, 2);
 	LCD_nokia_send_string(string_3); /*! It print a string stored in an array*/
-	delay(50);
 	LCD_nokia_goto_xy(0, 3);
 	LCD_nokia_send_string(string_4); /*! It print a string stored in an array*/
 }
@@ -32,12 +29,11 @@ void Menu_RGB_MANUAL(void) {
 	uint8_t string_1[]= "1) RGB"; /*! String to be printed in the LCD*/
 	uint8_t string_2[]= "   MANUAL";
 	uint8_t string_3[]= "SW3 = ";
-	uint8_t string_5[]="On";
+	uint8_t string_5[]= "On";
 	uint8_t string_4[]= "SW2 = ";
-	uint8_t string_6[]="Off";
+	uint8_t string_6[]= "Off";
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_1[0]); /*! It print a string stored in an array*/
-	delay(50);
 	LCD_nokia_goto_xy(0, 1); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_2[0]); /*! It print a string stored in an array*/
 	LCD_nokia_goto_xy(0, 3);
@@ -64,7 +60,6 @@ void Menu_RGB_ADC(void) {
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_0[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_1[0]);
-	delay(50);
 	LCD_nokia_goto_xy(0, 2); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_2[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_4[0]); /*! It print a string stored in an array*/
@@ -91,7 +86,6 @@ void Menu_RGB_SECUENCIA(void) {
 	LCD_nokia_send_string(&string_3[0]);
 	LCD_nokia_send_string(&string_4[0]);
 	LCD_nokia_send_string(&string_5[0]);
-	delay(50);
 	LCD_nokia_goto_xy(0, 3);
 	LCD_nokia_send_string(&string_6[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_7[0]);
@@ -116,7 +110,6 @@ void Menu_RGB_FRECUENCIA(void){
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_0[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_1[0]);
-	delay(50);
 	LCD_nokia_goto_xy(0, 2); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_2[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_4[0]); /*! It print a string stored in an array*/
