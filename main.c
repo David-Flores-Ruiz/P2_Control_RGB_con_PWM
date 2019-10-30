@@ -59,13 +59,14 @@ int main(void)
 {
 	RGB_init();
 	SW_init();
+	PIT_init();
 
 	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
 	NVIC_set_basepri_threshold(PRIORITY_10);
 
 	NVIC_enable_interrupt_and_priotity(PORTA_IRQ,PRIORITY_9);	// sw3
 	NVIC_enable_interrupt_and_priotity(PORTC_IRQ,PRIORITY_9);	// sw2
-
+	NVIC_enable_interrupt_and_priotity(PIT_CH0_IRQ, PRIORITY_9);
 	/* PTB2_B0 PTB3_B1 PTB10_B2 PB11_B3 PB18_B4 PB19_B5 PB20_B6  */
 	NVIC_enable_interrupt_and_priotity(PORTB_IRQ,PRIORITY_9);	// 7sw´s externos
 	NVIC_global_enable_interrupts;
@@ -90,7 +91,8 @@ int main(void)
 
 		FSM_control();
 
-			FSM_RGB_Manual();
+
+			//FSM_RGB_Manual();
 
 //		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
 //		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);

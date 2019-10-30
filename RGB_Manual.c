@@ -19,7 +19,7 @@ void FSM_RGB_Manual(void) {
 	static int16_t duty_cycle_GREEN = 0x0000;
 
 	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
-	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
+	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0, estado = 0;
 
 	uint8_t statusINT_sw2 = 0;
 	uint8_t statusINT_sw3 = 0;
@@ -33,7 +33,6 @@ void FSM_RGB_Manual(void) {
 
 	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
 	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
-
 	if (statusINT_sw2 == TRUE) {
 		current_state = IDLE;
 		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW

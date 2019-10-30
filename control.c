@@ -123,7 +123,7 @@ void FSM_control() {
 
 		case RGB_SECUENCIA:
 			LCD_nokia_clear();/*! It clears the information printed in the LCD*/
-			Menu_RGB_SECUENCIA();
+			RGB_secuencia_execute();
 
 			if ( statusINT_sw3 == TRUE){
 				g_FSM_status_flags.flag_RGB_SECUENCIA = TRUE;
