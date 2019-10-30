@@ -12,9 +12,29 @@
 
 
 #include "FlexTimer.h"
-#include "MK64F12.h"
 #include "GPIO.h"
+#include "PIT.h"
+#include <stdio.h>
 
+volatile uint32_t g_temp_ini = 0;
+volatile uint32_t g_temp_fin = 0;
+volatile uint32_t g_diff = 0;		// Tienes el numero de intervalo del FTM0 * 1ms = Periodo
+volatile My_float_t g_periodo = 0;
+volatile uint32_t g_frec = 0;
+
+
+void FTM0_IRQHandler(void){
+	if( (FTM0->STATUS) & (FTM_STATUS_CH3F_MASK) ){	// (0x08) -> Pregunta por bandera de CHOF3 en STATUS register!
+
+		g_temp_ini = g_temp_fin;					// Guarda un tiempo previo para poder hacer la resta
+		g_temp_fin = FTM0 -> CONTROLS[3].CnV;		// read FTM0 counter register
+		g_diff = g_temp_fin - g_temp_ini;
+		g_periodo = g_diff * (0.001);
+		FTM0->STATUS &= ~(FTM_STATUS_CH3F_MASK); 	// (0x08) apaga interrupcion
+
+		printf("Frecuencia de entrada: %u ms \n", g_periodo);
+	}
+}
 
 void FlexTimer_update_channel_value(int16_t channel_value, FTM0_Specific_OutputChannel_t FTM0_channel)
 {
@@ -135,7 +155,7 @@ void FTM_MOD(FTM_channel_t channel, uint32_t default_value)
 {
 	/**Assigning a default value for modulo register*/
 	if (FTM_0 == channel) {
-		FTM0->MOD = default_value; 		//0x00FF
+		FTM0->MOD = 0x00FF; 		//0x00FF
 	}
 	if (FTM_1 == channel) {
 		FTM1->MOD = default_value; 		//0x00FF
@@ -154,7 +174,8 @@ void FTM_CnSC_OperationMode(FTM_channel_t channel, FTM_OpMode_t OpMode)
 			FTM0->CONTROLS[2].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);	//** Selects the Edge-Aligned PWM mode: On High True pulses */
 		}
 		if (FTM_InputCapture_Falling == OpMode) {
-			FTM0->CONTROLS[0].CnSC = FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
+			FTM0->CONTROLS[3].CnSC |= FTM_CnSC_ELSB(1);		//** Selects the Input Capture mode: On Falling Edge */
+			FTM0->CONTROLS[3].CnSC |= FTM_CnSC_CHIE_MASK;	//** enable CH3 interrupt: CHIE*/
 		}
 	}
 	if (FTM_1 == channel) {
@@ -182,6 +203,8 @@ void FTM_CnV_DutyCycle_50(FTM_channel_t channel)
 		FTM0->CONTROLS[0].CnV = 0x00;
 		FTM0->CONTROLS[1].CnV = 0x00;
 		FTM0->CONTROLS[2].CnV = 0x00;
+
+		FTM0->CONTROLS[3].CnV = 0x00;
 	}
 	if (FTM_1 == channel) {
 		/**Assign a duty cycle of 50%*/
