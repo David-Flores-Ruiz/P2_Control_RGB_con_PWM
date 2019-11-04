@@ -2,7 +2,7 @@
  * RGB_Manual.c
  *
  *  Created on: 27 oct 2019
- *      Author: Lanix
+ *      Author: Ricardo Gonzalez Pacas/David Flores Ruiz
  */
 
 #include "RGB_Manual.h"

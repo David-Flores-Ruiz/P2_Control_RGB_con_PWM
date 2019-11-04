@@ -2,7 +2,7 @@
  * RGB_frecuencia.c
  *
  *  Created on: 3 nov 2019
- *      Author: Richard
+ *     Author: Ricardo Gonzalez Pacas/David Flores Ruiz
  *
  */
 

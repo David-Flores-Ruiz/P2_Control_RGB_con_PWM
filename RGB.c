@@ -2,7 +2,7 @@
  * RGB.c
  *
  *  Created on: 10 sep 2019
- *      Author: Ricardo Pacas
+ *      Author: Ricardo Gonzalez Pacas/David Flores Ruiz
  */
 
 #include "MK64F12.h"

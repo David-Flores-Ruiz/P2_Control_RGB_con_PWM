@@ -2,31 +2,24 @@
  * RGB_Secuencia.h
  *
  *  Created on: 28 oct 2019
- *      Author: pacas
+ *      Author: Ricardo Gonzalez Pacas/David Flores Ruiz
  */
 
 #ifndef RGB_SECUENCIA_H_
 #define RGB_SECUENCIA_H_
 #define SYSTEM_CLOCK (21000000U)
-
-/*typedef struct{
-	//GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
-	uint8_t(*fptrSWs_status)( gpio_port_name_t , SWs_externos_t );
-	uint32_t ON_OFF;
-	uint32_t FTM_output_CH;
-	void (*fptrFlexTimer_update_channel_value)( int16_t , FTM0_Specific_OutputChannel_t); //pit delay
-	uint8_t next[2];
-}State;*/
+#define MAX 10
 typedef enum {
 	Guardar_secuencia,
 	ejecutar_SW3,
 	regresar_SW2,
-
 } State_RGB_SECUENCIA_t;
 
-
+/*Guarda la secuencia segun el boton externo y lo almacena en un arreglo de max 10*/
 void RGB_secuencia_save(void);
+/*Ejecua la secuencia leyendo cada posicion del arreglo*/
 void RGB_secuencia_LED(void);
+/*Maquina de estados de la secuencia toma la desicion sobre guardar secuencia ejecutar secuencia y salir a menu */
 void RGB_secuencia_execute (void);
 
 
