@@ -17,6 +17,7 @@
 #include "RGB_Secuencia.h"
 #include "RGB_frecuencia.h"
 #include <stdio.h>
+#include "LCD_nokia.h"
 
 #define SIN_COLOR 0
 
@@ -94,16 +95,27 @@ void FSM_RGB_Frecuencia(void) {
 	int16_t duty_cycle_BLUE  = 0x0000;
 	int16_t duty_cycle_RED   = 0x0000;
 	int16_t duty_cycle_GREEN = 0x0000;
+
 	uint8_t statusINT_sw2 = 0;
 	uint8_t statusINT_sw3 = 0;
+
 	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
 	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
+
+	if (statusINT_sw2 == TRUE) {
+		current_state = IDLE_2;
+		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
+		FlexTimer_update_channel_value(0x00, FTM0_CH0);
+		FlexTimer_update_channel_value(0x00, FTM0_CH1);
+		FlexTimer_update_channel_value(0x00, FTM0_CH2);
+//		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
+	}
 
 	float_to_string = Return_FrecuenceValue(FTM_0);
 	Float_to_String_2(float_to_string/1000);
 
-
-		switch (current_state) {
+	switch (current_state)
+	{
 		case IDLE_2:
 			if (statusINT_sw3 == TRUE) {
 				current_state = Input_Capture_each_10ms;
@@ -313,7 +325,7 @@ void FSM_RGB_Frecuencia(void) {
 		default:
 			break;
 
-		} //end switch(current state)
+	} //end switch(current state)
 
 }
 

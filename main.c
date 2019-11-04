@@ -1,5 +1,5 @@
 /**
-	\file 
+	\file 	Practica #2
 	\brief 
 		This is a starter file to use the Nokia 5510 LCD. 
 		The LCD is connected as follows:
@@ -8,9 +8,9 @@
 		DC-PTD4
 		DIN-PTD2
 		CLK-PTD1
-	\author J. Luis Pizano Escalante, luispizano@iteso.mx
-	\date	19/09/2019
-	    The SPI device driver needs to be completed.
+	\author David Flores Ruiz, ie717807@iteso.mx
+			Ricardo Pacas Gonzalez
+	\date	2/11/2019
  */
 
 #include "SPI.h"
@@ -20,7 +20,6 @@
 #include "LCD_nokia.h"
 #include "LCD_nokia_images.h"
 #include <stdint.h>
-#include <stdio.h>
 #include "RGB.h"
 #include "menu.h"
 #include "control.h"
@@ -66,6 +65,11 @@ const FTM_config_t g_FTM0_CH3_config = {
 					GPIO_MUX4,
 					{GPIO_C, bit_4, bit_4, bit_4} };	// PTC4
 
+const adc_config_t g_ADC_config = {
+					ADC_0,
+					res_8bits,
+					bus_clock };
+
 /*! This array hold the initial picture that is shown in the LCD. Note that extern should be avoided*/
 //extern const uint8_t ITESO[504];
 
@@ -97,11 +101,8 @@ int main(void)
 	/**Configuration function for FlexTimer for Input Capture: FTM0_ch3*/
 	FlexTimer_Init(&g_FTM0_CH3_config);
 
-	/**Configuration function for ADC*/
-	ADC_clk(ADC_0);
-	ADC_conversion_mode(ADC_0);
-	ADC_calibration(ADC_0);
-	ADC_differential_mode_disable(ADC_0);
+	/**Configuration function for ADC0*/
+	ADC_init(&g_ADC_config);
 
 	for (;;)
 	{
@@ -112,7 +113,6 @@ int main(void)
 			activateFSM_RGB_ADC();
 			activateFSM_RGB_SECUENCIA();
 			activateFSM_RGB_FRECUENCIA();
-
 	}
 	
 	return 0;

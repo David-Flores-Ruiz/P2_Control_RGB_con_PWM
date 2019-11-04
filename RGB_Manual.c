@@ -10,6 +10,7 @@
 #include "Bits.h"
 #include "RGB.h"
 #include "FlexTimer.h"
+#include "LCD_nokia.h"
 
 
 void FSM_RGB_Manual(void) {
@@ -36,7 +37,11 @@ void FSM_RGB_Manual(void) {
 
 	if (statusINT_sw2 == TRUE) {
 		current_state = IDLE;
-		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW
+		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
+		FlexTimer_update_channel_value(0x00, FTM0_CH0);
+		FlexTimer_update_channel_value(0x00, FTM0_CH1);
+		FlexTimer_update_channel_value(0x00, FTM0_CH2);
+//		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
 	}
 
 	switch (current_state)

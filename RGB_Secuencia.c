@@ -13,6 +13,7 @@
 #include "PIT.h"
 #include "LCD_nokia.h"
 #include "RGB_Secuencia.h"
+#include "LCD_nokia.h"
 
 static uint8_t array[10] = { 0 };
 static State_RGB_SECUENCIA_t current_state = Guardar_secuencia;
@@ -72,8 +73,10 @@ void RGB_secuencia_LED(void) {
 	uint8_t estado = 0;
 	uint8_t statusINT_sw2 = 0;
 	static uint8_t a = 0;
+
 	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
 	GPIO_clear_irq_status(GPIO_C);
+
 	switch (array[a]) {
 	case 'Z':
 		if (statusINT_sw2) {
@@ -202,7 +205,7 @@ void RGB_secuencia_execute (void){
 	}
 	if(statusINT_sw2 == TRUE){
 		current_state = regresar_SW2;
-		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW
+		//GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
 	}
 
 	switch (current_state)

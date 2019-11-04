@@ -18,6 +18,7 @@
 #include "RGB_ADC.h"
 #include "RGB_Secuencia.h"
 #include "FlexTimer.h"
+#include "RGB_frecuencia.h"
 
 #define DEBUG_ON				/* Para proposito de DEBUG */
 
@@ -56,9 +57,8 @@ void activateFSM_RGB_SECUENCIA() {
 
 void activateFSM_RGB_FRECUENCIA() {
 	if (g_FSM_status_flags.flag_RGB_FRECUENCIA == TRUE) {
-		FSM_RGB_Frecuencia();
 		//Menu_RGB_FRECUENCIA();
-		//RGB_();
+		FSM_RGB_Frecuencia();
 	}
 	if(g_FSM_status_flags.flag_RGB_FRECUENCIA == FALSE) {
 		// Stop FSM
@@ -77,17 +77,15 @@ void FSM_control() {
 
 	uint8_t* ptr_array_PUMA = LCD_nokia_PUMA ();
 
-	if (g_FSM_status_flags.flag_RGB_MANUAL == FALSE)
-	{
-		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
-		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
-		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
-		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
-		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
+	state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
+	state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
+	state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
+	state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
+	state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
 
-		statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
-		statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
-	}
+	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
+	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
+
 	if (incioRGB) {
 		switch (current_state_inicio)
 		{
@@ -184,6 +182,8 @@ void FSM_control() {
 			if ( statusINT_sw2 == TRUE ) {
 				g_FSM_status_flags.flag_RGB_MANUAL = FALSE;
 				current_state = MENU_INICIAL;
+				LCD_nokia_clear();
+				GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
 			}
 			break; // end case RGB_MANUAL
 
@@ -198,6 +198,7 @@ void FSM_control() {
 			if ( statusINT_sw2 == TRUE ) {
 				g_FSM_status_flags.flag_RGB_ADC = FALSE;
 				current_state = MENU_INICIAL;
+				GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
 			}
 			break;// end case RGB_ADC
 
@@ -209,10 +210,11 @@ void FSM_control() {
 				g_FSM_status_flags.flag_RGB_SECUENCIA = TRUE;
 				current_state = RGB_SECUENCIA;
 
-//			if ( statusINT_sw2 == TRUE ) {
-//				g_FSM_status_flags.flag_RGB_SECUENCIA = FALSE;
-//				current_state = MENU_INICIAL;
-//			}
+			if ( statusINT_sw2 == TRUE ) {
+				g_FSM_status_flags.flag_RGB_SECUENCIA = FALSE;
+				current_state = MENU_INICIAL;
+				GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
+			}
 
 			break;// end case RGB_SECUENCIA
 
@@ -227,6 +229,7 @@ void FSM_control() {
 			if ( statusINT_sw2 == TRUE ) {
 				g_FSM_status_flags.flag_RGB_FRECUENCIA = FALSE;
 				current_state = MENU_INICIAL;
+				GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
 			}
 			break;// end case RGB_SECUENCIA
 

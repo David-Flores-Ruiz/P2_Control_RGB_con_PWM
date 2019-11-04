@@ -13,6 +13,8 @@
 #include "PIT.h"
 #include "ADC.h"
 #include <stdio.h>
+#include "LCD_nokia.h"
+
 
 #define RED_base 128
 #define GREEN_base 128
@@ -99,10 +101,18 @@ void FSM_RGB_ADC(void) {
 	statusINT_sw2 = GPIO_get_irq_status(GPIO_C);
 	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
 
+	if (statusINT_sw2 == TRUE) {
+		current_state = IDLE_2;
+		LCD_nokia_clear();/*! It clears the information printed in the LCD*/
+		FlexTimer_update_channel_value(0x00, FTM0_CH0);
+		FlexTimer_update_channel_value(0x00, FTM0_CH1);
+		FlexTimer_update_channel_value(0x00, FTM0_CH2);
+//		GPIO_clear_irq_status(GPIO_C);	// Limpia flag de SW de sw2
+	}
 
-	// Modulo que lee el ADC:
+	//** Modulo que lee el ADC */
 	static uint8_t POT_voltage[10] = {0};
-	static uint8_t contador=0;
+	static uint8_t contador = 0;
 	uint32_t prom = 0;
 	uint8_t estado = 0;
 	My_float_t Map_voltage = 0;
@@ -116,7 +126,7 @@ void FSM_RGB_ADC(void) {
 		PIT_clear_irq_flag_status(PIT_0);	// Limpiamos bandera de Software
 	}
 
-		if (contador == 10) {
+	if (contador == 10) {
 		prom = prom + POT_voltage[0];
 		prom = prom + POT_voltage[1];
 		prom = prom + POT_voltage[2];
@@ -129,13 +139,13 @@ void FSM_RGB_ADC(void) {
 		prom = prom + POT_voltage[9];
 		prom = prom / 10;
 
-		Map_voltage = (prom*3.10) / 240;
-		Float_to_String (Map_voltage);
+		Map_voltage = (prom * 3.10) / 240;
+		Float_to_String(Map_voltage);
 		//	printf("Voltage to LCD: %u  \n", (uint8_t)Map_voltage);
 	}
 
 	if (contador == 10) {
-		contador=0;
+		contador = 0;
 		switch (current_state) {
 		case IDLE_2:
 			if (statusINT_sw3 == TRUE) {
