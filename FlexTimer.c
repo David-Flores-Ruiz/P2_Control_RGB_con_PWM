@@ -15,25 +15,52 @@
 #include "GPIO.h"
 #include "PIT.h"
 #include <stdio.h>
+#include "Bits.h"
+
+#define TIME_INC_CNT 0.00000615
 
 volatile uint32_t g_temp_ini = 0;
 volatile uint32_t g_temp_fin = 0;
 volatile uint32_t g_diff = 0;		// Tienes el numero de intervalo del FTM0 * 1ms = Periodo
 volatile My_float_t g_periodo = 0;
-volatile uint32_t g_frec = 0;
-
+volatile My_float_t g_frec = 0;
+uint32_t Avr = 0;
+uint32_t Cnt = 0;
+uint32_t flag_impar = 1;
+uint32_t flag_oneTime = 0;
 
 void FTM0_IRQHandler(void){
 	if( (FTM0->STATUS) & (FTM_STATUS_CH3F_MASK) ){	// (0x08) -> Pregunta por bandera de CHOF3 en STATUS register!
-
 		g_temp_ini = g_temp_fin;					// Guarda un tiempo previo para poder hacer la resta
 		g_temp_fin = FTM0 -> CONTROLS[3].CnV;		// read FTM0 counter register
-		g_diff = g_temp_fin - g_temp_ini;
-		g_periodo = g_diff * (0.001);
-		FTM0->STATUS &= ~(FTM_STATUS_CH3F_MASK); 	// (0x08) apaga interrupcion
 
-		printf("Frecuencia de entrada: %u ms \n", g_periodo);
+		if ( (g_temp_fin > g_temp_ini) && (flag_oneTime == 1) ) {
+			g_diff = g_temp_fin - g_temp_ini;
+			Avr = Avr + g_diff;
+			Cnt++;
+		}
+
+	if (Cnt == 8) {
+			if (flag_impar) {
+			Avr = Avr >> 3;
+			g_periodo = Avr * (TIME_INC_CNT);			 // Incrementa el Cnt a 320Hz o ("640Hz")
+			g_frec = 1 / g_periodo;
+		}
+			Cnt = 0;
+			Avr = 0;
+			flag_impar = !flag_impar;
 	}
+
+		FTM0->STATUS &= ~(FTM_STATUS_CH3F_MASK); 	// (0x08) NO! apaga interrupcion de CH3F
+		GPIO_toogle_pin(GPIO_E, bit_24);
+		flag_oneTime = 1;
+	}
+}
+
+float Return_FrecuenceValue(FTM_channel_t channel) {
+	My_float_t Frecuencia_to_LCD = 0;
+	Frecuencia_to_LCD = g_frec;
+	return (Frecuencia_to_LCD);
 }
 
 void FlexTimer_update_channel_value(int16_t channel_value, FTM0_Specific_OutputChannel_t FTM0_channel)
@@ -155,7 +182,7 @@ void FTM_MOD(FTM_channel_t channel, uint32_t default_value)
 {
 	/**Assigning a default value for modulo register*/
 	if (FTM_0 == channel) {
-		FTM0->MOD = 0x00FF; 		//0x00FF
+		FTM0->MOD = default_value; 		//0x00FF
 	}
 	if (FTM_1 == channel) {
 		FTM1->MOD = default_value; 		//0x00FF

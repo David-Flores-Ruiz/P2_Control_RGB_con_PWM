@@ -25,6 +25,7 @@ void RGB_init(void) {
 	/**	Configurar el Clock Gating de los perifericos GPIO a utilizar */
 	GPIO_clock_gating(GPIO_B);	// led azul y rojo
 	GPIO_clock_gating(GPIO_E);	// led verde
+
 	gpio_pin_control_register_t led_config = GPIO_MUX1;	// 100 de GPIO
 	/** OUTPUT: Configurar como LED RGB (GPIO) + safe value + como output */
 
@@ -39,6 +40,13 @@ void RGB_init(void) {
 	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_22); // OUTPUT - 1 RED
 	GPIO_data_direction_pin(GPIO_E, GPIO_OUTPUT, bit_26); // OUTPUT - 1 GREEN
 	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_21); // OUTPUT - 1 BLUE
+
+	GPIO_pin_control_register(GPIO_E, bit_24, &led_config); // GPIO - PTE_24 Debug del Input Capture
+
+	GPIO_clear_pin(GPIO_E, bit_24);	// OFF
+	GPIO_data_direction_pin(GPIO_E, GPIO_OUTPUT, bit_24);  // OUTPUT
+	GPIO_clear_pin(GPIO_E, bit_24);	// OFF
+
 }
 
 void SW_init(void){

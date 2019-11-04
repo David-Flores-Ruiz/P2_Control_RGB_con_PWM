@@ -26,6 +26,7 @@
 #include "control.h"
 #include "FlexTimer.h"
 #include "RGB_Manual.h"
+#include "RGB_ADC.h"
 #include "ADC.h"
 #include "PIT.h"
 
@@ -49,7 +50,7 @@ const FTM_config_t g_FTM0_config = {
 					FTM_0,
 					FTM_DISABLE_WPDIS,
 					FTM_DISABLE_FTMEN,
-					0x00FF,						// MOD
+					0x00FF,						// MOD = 255d para cuenta de Reinicio
 					FTM_PWM_EdgeAligned_High,	// CnSC y CnV asigna a FTM0_CH0, FTM0_CH1, FTM0_CH2
 					GPIO_MUX4,
 					{GPIO_C, bit_1, bit_2, bit_3} }; 	// PTC1, PTC2, PTC3
@@ -58,7 +59,7 @@ const FTM_config_t g_FTM0_CH3_config = {
 					FTM_0,
 					FTM_DISABLE_WPDIS,
 					FTM_DISABLE_FTMEN,
-					0x0051,						// MOD = 81d para tener un Ftof = (10.5MHz)/(128)*(81+1)
+					0x00FF,						// MOD = 255d para tener un Ftof = (10.5MHz)/(128)*(255+1) = 320Hz
 					FTM_InputCapture_Falling,	// enable CHIE y capture en Falling
 					GPIO_MUX4,
 					{GPIO_C, bit_4, bit_4, bit_4} };	// PTC4
@@ -70,12 +71,14 @@ int main(void)
 {
 	RGB_init();
 	SW_init();
+	PIT_init();
 
 	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
 	NVIC_set_basepri_threshold(PRIORITY_10);
 
 	NVIC_enable_interrupt_and_priotity(PORTA_IRQ,PRIORITY_9);	// sw3
 	NVIC_enable_interrupt_and_priotity(PORTC_IRQ,PRIORITY_9);	// sw2
+	NVIC_enable_interrupt_and_priotity(PIT_CH0_IRQ, PRIORITY_9); // PIT_0
 
 	/* PTB2_B0 PTB3_B1 PTB10_B2 PB11_B3 PB18_B4 PB19_B5 PB20_B6  */
 	NVIC_enable_interrupt_and_priotity(PORTB_IRQ,PRIORITY_9);	// 7sw´s externos
@@ -103,26 +106,29 @@ int main(void)
 	ADC_calibration(ADC_0);
 	ADC_differential_mode_disable(ADC_0);
 
+	My_float_t Float_to_String = 0;
 
 	for (;;)
 	{
 		GPIO_decode_intr_PORTB (GPIO_B);
 
-		//FSM_control();
-
-		//	FSM_RGB_Manual();
 
 
-		// Modulo que lee el ADC:
-			uint8_t POT_voltage = 0;
-			My_float_t AVR_voltage_map = 0;
+		FSM_control();
+			activateFSM_RGB_MANUAL();
+			activateFSM_RGB_ADC();
+			activateFSM_RGB_SECUENCIA();
+			activateFSM_RGB_FRECUENCIA();
 
-			POT_voltage = 0;
-			POT_voltage = ADC_result(ADC_0);
 
-			AVR_voltage_map = (POT_voltage*3.10) / 240;
-		//	printf("Voltage to LCD: %u  \n", (uint8_t)AVR_voltage_map);
-		// end module
+			//FSM_RGB_Manual();
+
+			//FSM_RGB_ADC();
+
+			//RGB_secuencia_execute();
+
+		//Float_to_String = Return_FrecuenceValue(FTM_0);
+		//printf("Frecuencia de entrada: %u Hz \n ", (uint32_t)Float_to_String);
 
 //		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
 //		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);

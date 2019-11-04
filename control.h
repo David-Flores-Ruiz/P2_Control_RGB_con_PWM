@@ -14,10 +14,17 @@
 
 
 typedef enum {
+	RGB_INICIO,
 	FONDO_PANTALLA,
 	MENU_INICIAL,
 	RGB_MANUAL, RGB_ADC, RGB_SECUENCIA, RGB_FRECUENCIA,
 } State_t;
+
+typedef enum{
+	RED_inicio,
+	GREEN_inicio,
+	BLUE_inicio,
+}State_inicio_t;
 
 //** Para saltar al código de la máquina de estado */
 //** Si es la segunda vez o número par que presiona B0 es para regresar a Fondo de Pantalla */
@@ -31,6 +38,12 @@ typedef struct {
 } FSM_flags_t;
 
 void activateFSM_RGB_MANUAL();
+
+void activateFSM_RGB_ADC();
+
+void activateFSM_RGB_SECUENCIA();
+
+void activateFSM_RGB_FRECUENCIA();
 
 void Wait_1_second(); //** Para el blink de los leds */
 

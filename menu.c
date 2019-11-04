@@ -8,6 +8,8 @@
 #include "menu.h"
 #include "RGB.h"
 #include "LCD_nokia.h"
+#include "RGB_ADC.h"
+
 
 void Menu_Inicial(void) {
 	uint8_t string_1[]="1)RGB Manual"; /*! String to be printed in the LCD*/
@@ -52,6 +54,8 @@ void Menu_RGB_ADC(void) {
 	uint8_t string_3[] ="SW2 = ";
 	uint8_t string_5[] ="Off";
 
+	uint8_t* ptr_string_POT = Get_String_POT();
+
 	uint16_t index=0;
 	for (index = 0 ; index < (6-1) ; index++){
 	  string_1[index] = *(string_1 + index);
@@ -59,7 +63,7 @@ void Menu_RGB_ADC(void) {
 
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_0[0]); /*! It print a string stored in an array*/
-	LCD_nokia_send_string(&string_1[0]);
+	LCD_nokia_send_string(ptr_string_POT);
 	LCD_nokia_goto_xy(0, 2); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_2[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_4[0]); /*! It print a string stored in an array*/

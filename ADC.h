@@ -10,11 +10,13 @@
 #include <MK64F12.h>
 #include "stdint.h"
 #include "GPIO.h"
+#include "PIT.h"
+
 typedef enum {ADC_0,
 			  ADC_1,
 			  } adc_channel_t;
 
-/* It enable the clock module of the ADC by modifying the SIM_SCGC6 bits */
+//* It enable the clock module of the ADC by modifying the SIM_SCGC6 bits */
 void ADC_clk(adc_channel_t channel);
 
 //** Modo de operacion, fuente de reloj, Divisor del Reloj y Low Power */

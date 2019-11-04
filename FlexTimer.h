@@ -107,4 +107,6 @@ void FTM_SC_ConfigTime(FTM_channel_t channel);
  * the configuration parameters*/
 void FlexTimer_Init(const FTM_config_t* config_struct);
 
+float Return_FrecuenceValue (FTM_channel_t channel);
+
 #endif /* FLEXTIMER_H_ */

@@ -6,6 +6,7 @@
  */
 
 #include "ADC.h"
+#include "PIT.h"
 #include <stdint.h>
 
 void ADC_clk(adc_channel_t channel){
