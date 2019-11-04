@@ -9,6 +9,8 @@
 #include "RGB.h"
 #include "LCD_nokia.h"
 #include "RGB_ADC.h"
+#include "RGB_frecuencia.h"
+
 
 
 void Menu_Inicial(void) {
@@ -99,12 +101,14 @@ void Menu_RGB_SECUENCIA(void) {
 }
 
 void Menu_RGB_FRECUENCIA(void){
-	uint8_t string_0[] ="Freq "; /*! String to be printed in the LCD*/
-	uint8_t string_1[6]="XX.YY";
+	uint8_t string_0[] ="Fre "; /*! String to be printed in the LCD*/
+	uint8_t string_1[9]="XX.YYkHz";
 	uint8_t string_2[] ="SW3 = ";
 	uint8_t string_4[] ="On";
 	uint8_t string_3[] ="SW2 = ";
 	uint8_t string_5[] ="Off";
+
+	uint8_t* ptr_string_FREC = Get_String_FREC();
 
 	uint16_t index=0;
 	for (index = 0 ; index < (6-1) ; index++){
@@ -113,7 +117,7 @@ void Menu_RGB_FRECUENCIA(void){
 
 	LCD_nokia_goto_xy(0, 0); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_0[0]); /*! It print a string stored in an array*/
-	LCD_nokia_send_string(&string_1[0]);
+	LCD_nokia_send_string(ptr_string_FREC);
 	LCD_nokia_goto_xy(0, 2); /*! It establishes the position to print the messages in the LCD*/
 	LCD_nokia_send_string(&string_2[0]); /*! It print a string stored in an array*/
 	LCD_nokia_send_string(&string_4[0]); /*! It print a string stored in an array*/

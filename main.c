@@ -27,6 +27,8 @@
 #include "FlexTimer.h"
 #include "RGB_Manual.h"
 #include "RGB_ADC.h"
+#include "RGB_Secuencia.h"
+#include "RGB_frecuencia.h"
 #include "ADC.h"
 #include "PIT.h"
 
@@ -90,11 +92,6 @@ int main(void)
 
 	LCD_nokia_clear();
 
-//	uint8_t state_B0 = 0;
-//	uint8_t state_B1 = 0, state_B2 = 0, state_B3 = 0;
-//	uint8_t state_B4 = 0, state_B5 = 0, state_B6 = 0;
-
-
 	/**Configuration function for FlexTimer for PWM: FTM0_ch0_ch1_ch2*/
 	FlexTimer_Init(&g_FTM0_config);
 	/**Configuration function for FlexTimer for Input Capture: FTM0_ch3*/
@@ -106,45 +103,15 @@ int main(void)
 	ADC_calibration(ADC_0);
 	ADC_differential_mode_disable(ADC_0);
 
-	My_float_t Float_to_String = 0;
-
 	for (;;)
 	{
 		GPIO_decode_intr_PORTB (GPIO_B);
-
-
 
 		FSM_control();
 			activateFSM_RGB_MANUAL();
 			activateFSM_RGB_ADC();
 			activateFSM_RGB_SECUENCIA();
 			activateFSM_RGB_FRECUENCIA();
-
-
-			//FSM_RGB_Manual();
-
-			//FSM_RGB_ADC();
-
-			//RGB_secuencia_execute();
-
-		//Float_to_String = Return_FrecuenceValue(FTM_0);
-		//printf("Frecuencia de entrada: %u Hz \n ", (uint32_t)Float_to_String);
-
-//		state_B0 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B0);
-//		state_B1 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B1);
-//		state_B2 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B2);
-//		state_B3 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B3);
-//		state_B4 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B4);
-//		state_B5 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B5);
-//		state_B6 = GPIO_get_PORTB_SWs_status(GPIO_B, sw_B6);
-
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B0);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B1);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B2);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B3);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B4);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B5);
-//		GPIO_clear_PORTB_SWs_status(GPIO_B, sw_B6);
 
 	}
 	

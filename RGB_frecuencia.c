@@ -5,17 +5,88 @@
  *      Author: Richard
  *
  */
-#include "RGB_frecuencia.h"
-#include "RGB_ADC.h"
+
 #include "GPIO.h"
 #include "Bits.h"
 #include "RGB.h"
 #include "FlexTimer.h"
 #include "PIT.h"
 #include "ADC.h"
+#include "RGB_Manual.h"
+#include "RGB_ADC.h"
+#include "RGB_Secuencia.h"
+#include "RGB_frecuencia.h"
 #include <stdio.h>
 
 #define SIN_COLOR 0
+
+#define STRING_FREC &string_valueFREC[0]	//Direccion del arreglo de Voltage
+
+uint8_t g_decenas_Frec  = 0;
+uint8_t g_unidades_Frec = 0;
+uint8_t g_decimas_Frec    = 0;
+uint8_t g_centesimas_Frec = 0;
+
+uint8_t string_valueFREC[9]="XX.YYkHz";
+uint8_t string_dummy_Frec[ ] = "";
+
+void Float_to_String_2 (My_float_t flotante){
+	g_decenas_Frec  = flotante / 10;
+	g_unidades_Frec = ( flotante - (g_decenas_Frec*10) ) / 1;
+	g_decimas_Frec  = ( flotante - (g_decenas_Frec*10 + g_unidades_Frec*1) ) / 0.1;
+	g_centesimas_Frec = ( flotante - (g_decenas_Frec*10 + g_unidades_Frec*1 + g_decimas_Frec*0.1) ) / 0.01;
+
+	string_valueFREC[0] = RGB_ADC_String(g_decenas_Frec);
+	string_valueFREC[1] = RGB_ADC_String(g_unidades_Frec);
+
+	string_valueFREC[3] = RGB_ADC_String(g_decimas_Frec);
+	string_valueFREC[4] = RGB_ADC_String(g_centesimas_Frec);
+}
+
+uint8_t* Get_String_FREC (void) {
+	uint8_t* ptr_String_FREC = STRING_FREC;
+	return (ptr_String_FREC);
+}
+
+uint8_t RGB_FREC_String(uint8_t entero)
+{
+	switch (entero)
+	{
+		case CERO:
+			string_dummy_Frec[0] = '0';
+			break;
+		case UNO:
+			string_dummy_Frec[0] = '1';
+			break;
+		case DOS:
+			string_dummy_Frec[0] = '2';
+			break;
+		case TRES:
+			string_dummy_Frec[0] = '3';
+			break;
+		case CUATRO:
+			string_dummy_Frec[0] = '4';
+			break;
+		case CINCO:
+			string_dummy_Frec[0] = '5';
+			break;
+		case SEIS:
+			string_dummy_Frec[0] = '6';
+			break;
+		case SIETE:
+			string_dummy_Frec[0] = '7';
+			break;
+		case OCHO:
+			string_dummy_Frec[0] = '8';
+			break;
+		case NUEVE:
+			string_dummy_Frec[0] = '9';
+			break;
+		default:
+			break;
+		}
+	return string_dummy_Frec[0];
+}
 
 void FSM_RGB_Frecuencia(void) {
 	My_float_t float_to_string = 0;
@@ -29,6 +100,8 @@ void FSM_RGB_Frecuencia(void) {
 	statusINT_sw3 = GPIO_get_irq_status(GPIO_A);
 
 	float_to_string = Return_FrecuenceValue(FTM_0);
+	Float_to_String_2(float_to_string/1000);
+
 
 		switch (current_state) {
 		case IDLE_2:
